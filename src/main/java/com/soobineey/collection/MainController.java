@@ -5,10 +5,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Controller
@@ -22,7 +24,8 @@ public class MainController {
 
   // sendController에서 호출하면 코드 실행
   @PostMapping("receiveData")
-  public String receiveData(@RequestParam("result") String result) {
+  public Model receiveData(Model model, @RequestParam("result") String result) {
+//  public String receiveData(Model model, @RequestParam("result") String result) {
     // 받아온 데이터를 JSon 변환을 위한 jsonParser
     JSONParser jsonParser = new JSONParser();
     // 데이터를 저장하고 보여주기 해쉬맵
@@ -30,6 +33,8 @@ public class MainController {
     HashMap<Integer, String> asksQuantityHash = new HashMap<>();
     HashMap<Integer, String> bidsPriceHash = new HashMap<>();
     HashMap<Integer, String> bidsQuantityHash = new HashMap<>();
+
+//    ArrayList<HashMap<Integer, String>> returnData = new ArrayList<>();
 
     try {
       JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
@@ -62,9 +67,20 @@ public class MainController {
         bidsQuantityHash.put(bidsIndex, bidsQuantityData);
       }
 
+//      returnData.add(asksPriceHash);
+//      returnData.add(asksQuantityHash);
+//      returnData.add(bidsPriceHash);
+//      returnData.add(bidsQuantityHash);
+
+      model.addAttribute("asksPriceHash", asksPriceHash);
+      model.addAttribute("asksQuantityHash", asksQuantityHash);
+      model.addAttribute("bidsPriceHash", bidsPriceHash);
+      model.addAttribute("bidsQuantityHash", bidsQuantityHash);
+
     } catch (ParseException e) {
       e.printStackTrace();
     }
-    return "index";
+    return model;
+//    return returnData;
   }
 }
